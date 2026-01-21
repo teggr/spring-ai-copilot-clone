@@ -1,34 +1,65 @@
 package com.example.copilot;
 
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.stereotype.Component;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
-@ShellComponent
+@Component
+@Command(name = "", description = "Copilot CLI commands")
 public class CopilotCommands {
 
-    private final ChatClient chatClient;
+    private final ChatSession chatSession;
 
-    public CopilotCommands(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+    public CopilotCommands(ChatSession chatSession) {
+        this.chatSession = chatSession;
     }
 
-    @ShellMethod(key = "ask", value = "Ask a question to the AI assistant")
-    public String ask(@ShellOption(help = "Your question") String question) {
+    @Command(name = "ask", description = "Ask a single question to the AI assistant")
+    public String ask(@Parameters(description = "Your question") String question) {
         if (question == null || question.trim().isEmpty()) {
             return "Error: Please provide a question.";
         }
         
-        try {
-            return chatClient.prompt()
-                    .user(question)
-                    .call()
-                    .content();
-        } catch (Exception e) {
-            return "Error: Unable to get response from AI service. " + 
-                   "Please check your API key and network connection. Details: " + e.getMessage();
-        }
+        // Clear history and ask a single question
+        chatSession.clearHistory();
+        return chatSession.addMessage(question);
     }
 
+    @Command(name = "clear", description = "Clear the conversation history")
+    public String clear() {
+        chatSession.clearHistory();
+        return "Conversation history cleared.";
+    }
+
+    @Command(name = "history", description = "Show the conversation history")
+    public String history() {
+        int count = chatSession.getMessageCount();
+        if (count == 0) {
+            return "No conversation history.";
+        }
+        return "Conversation has " + count + " messages.";
+    }
+
+    @Command(name = "exit", description = "Exit the application")
+    public int exit() {
+        System.out.println("Goodbye!");
+        return 0;
+    }
+
+    @Command(name = "help", description = "Display help information")
+    public String help() {
+        return """
+                Available commands:
+                  /ask <question>  - Ask a single question (clears history)
+                  /clear           - Clear conversation history
+                  /history         - Show conversation history info
+                  /help            - Display this help message
+                  /exit            - Exit the application
+                  
+                Interactive mode:
+                  <text>           - Add message to conversation (maintains history)
+                  /<command>       - Execute a command
+                  !<shell-command> - Execute a shell command (WARNING: runs with full system access)
+                """;
+    }
 }
