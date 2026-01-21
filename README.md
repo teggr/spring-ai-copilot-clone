@@ -1,28 +1,24 @@
 # spring-ai-copilot-clone
 
-A Github copilot CLI clone using Spring AI, implementing an interactive console with AI chat capabilities.
+An interactive Java CLI with slash commands using JLine 3 and Spring Boot.
 
 ## Features
 
-- Interactive console interface with command support
-- Continuous conversation with AI maintaining chat history
-- Integration with OpenAI's GPT models via Spring AI
-- Command-line based question and answer interface
-- Shell command execution support
+- Interactive REPL with slash commands
+- Command auto-completion using Tab key
+- Prompt template system
+- Session management
+- Built-in commands: /help, /exit, /prompt
+- Ctrl+C to cancel input, Ctrl+D to exit
 
 ## Prerequisites
 
 - Java 17 or higher
 - Maven 3.6+
-- OpenAI API key
 
 ## Setup
 
-1. Set your OpenAI API key as an environment variable:
-
-```bash
-export OPENAI_API_KEY=your-api-key-here
-```
+No additional setup required. The application is ready to run.
 
 ## Build
 
@@ -46,63 +42,78 @@ java -jar target/spring-ai-copilot-clone-0.0.1-SNAPSHOT.jar
 
 Once the application starts, you'll be presented with an interactive console prompt.
 
-### Interactive Mode
+### Available Commands
 
-- **Plain text input**: Add messages to the current chat session (maintains conversation history)
-  ```
-  > What is Spring Boot?
-  ```
+- `/help` - List all available commands with descriptions
+- `/exit` - Exit the application cleanly
+- `/prompt <prompt-name> <optional trailing text>` - Use a prompt template
 
-- **Commands (prefix with `/`)**: Execute application commands
-  ```
-  > /ask "What is Spring Boot?"
-  > /clear
-  > /history
-  > /help
-  > /exit
-  ```
+### Prompt Templates
 
-- **Shell commands (prefix with `!`)**: Execute system shell commands
-  ```
-  > !ls
-  > !pwd
-  > !echo "Hello World"
-  ```
+The application comes with preloaded prompt templates:
 
-## Commands
+- `daily-summary` - Summarize today's work
+- `code-review` - Request a code review
 
-- `/ask <question>` - Ask a single question (clears conversation history first)
-- `/clear` - Clear the conversation history
-- `/history` - Show information about the conversation history
-- `/help` - Display help information
-- `/exit` - Exit the application
+### Command Completion
 
-## Technologies Used
-
-- Spring Boot 3.5.9
-- Picocli 4.7.5 (for command parsing)
-- Spring AI 1.1.2
-- OpenAI GPT-4o-mini
+Press `Tab` to see available completions:
+- Type `/` and press Tab to see all commands
+- Type `/prompt` and press Tab to see all prompt templates
+- Start typing a prompt name to filter suggestions
 
 ## Examples
 
 ```
-> Hello, how are you?
-I'm doing well, thank you for asking! How can I help you today?
+> /help
+Available commands:
+  /exit - Exit the REPL cleanly
+  /help - List all available commands with descriptions
+  /prompt - Use a prompt template: /prompt <prompt-name> <optional trailing text>
 
-> What is Java?
-Java is a high-level, class-based, object-oriented programming language...
+> /prompt daily-summary focus on auth module
+Summarize today's work:
+focus on auth module
 
-> /clear
-Conversation history cleared.
-
-> /ask "What is Python?"
-Python is an interpreted, high-level programming language...
-
-> !date
-Tue Jan 21 16:30:00 UTC 2026
+> /prompt code-review
+Please review the following code:
 
 > /exit
 Goodbye!
 ```
+
+## Architecture
+
+The application follows a clean architecture with the following packages:
+
+- `application` - Main entry point
+- `repl` - REPL loop implementation using JLine
+- `command` - Slash command interface and registry
+- `command.impl` - Built-in command implementations
+- `completion` - Auto-completion system
+- `prompt` - Prompt template system
+- `session` - Session management
+- `context` - Command execution context
+
+## Technologies Used
+
+- Spring Boot 3.5.9
+- JLine 3.27.1 (for terminal interaction and auto-completion)
+- Java 17
+
+## Testing
+
+Run tests:
+
+```bash
+mvn test
+```
+
+The project includes:
+- Unit tests for command registry
+- Unit tests for prompt system
+- Unit tests for command execution
+- Integration tests for completion system
+- Spring context loading tests
+
 
