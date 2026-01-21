@@ -13,14 +13,11 @@ import java.io.InputStreamReader;
 @SpringBootApplication
 public class CopilotApplication implements CommandLineRunner {
 
-    private final ApplicationContext applicationContext;
     private final ChatSession chatSession;
     private final CopilotCommands copilotCommands;
 
-    public CopilotApplication(ApplicationContext applicationContext, 
-                             ChatSession chatSession,
+    public CopilotApplication(ChatSession chatSession,
                              CopilotCommands copilotCommands) {
-        this.applicationContext = applicationContext;
         this.chatSession = chatSession;
         this.copilotCommands = copilotCommands;
     }

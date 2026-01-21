@@ -59,7 +59,7 @@ public class CopilotCommands {
                 Interactive mode:
                   <text>           - Add message to conversation (maintains history)
                   /<command>       - Execute a command
-                  !<shell-command> - Execute a shell command
+                  !<shell-command> - Execute a shell command (WARNING: runs with full system access)
                 """;
     }
 }
