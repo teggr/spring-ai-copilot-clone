@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.9</version>
+        <version>3.5.10</version>
         <relativePath/>
     </parent>
 
@@ -19,7 +19,7 @@
     <description>A clone of github copilot cli using Spring AI</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
         <spring-ai.version>1.1.2</spring-ai.version>
         <picocli.version>4.7.5</picocli.version>
     </properties>
@@ -31,16 +31,11 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- Picocli -->
+        <!-- jline for console -->
         <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
-            <version>${picocli.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-spring-boot-starter</artifactId>
-            <version>${picocli.version}</version>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.30.0</version>
         </dependency>
 
         <!-- Spring AI OpenAI -->
@@ -81,6 +76,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>--enable-native-access=ALL-UNNAMED</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
