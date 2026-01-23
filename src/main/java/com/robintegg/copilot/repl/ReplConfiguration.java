@@ -1,5 +1,6 @@
 package com.robintegg.copilot.repl;
 
+import com.robintegg.copilot.agents.MainAgent;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -12,18 +13,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 public class ReplConfiguration {
 
   @Bean
-  public CommandLineRunner commandLineRunner(List<SlashCommand> comamnds) {
+  public CommandLineRunner commandLineRunner(List<ReplCommand> replCommands, MainAgent mainAgent) {
 
     return args -> {
-      System.out.println("REPL CommandLineRunner initialized.");
-      // Additional REPL setup can be done here
+      System.out.println("Welcome to the Github Copilot clone.");
 
       try {
         // Create a terminal
@@ -31,7 +30,7 @@ public class ReplConfiguration {
 
         List<Completer> allCompleters = new ArrayList<>();
         allCompleters.add(new StringsCompleter("/quit", "/exit"));
-        allCompleters.addAll( comamnds.stream().map( SlashCommand::completer ).toList() );
+        replCommands.stream().map(ReplCommand::completer).forEach(allCompleters::add);
 
         // Create a line reader
         LineReader reader = LineReaderBuilder.builder()
@@ -49,8 +48,20 @@ public class ReplConfiguration {
           }
 
           // Echo the line back to the user
-          terminal.writer().println("You entered: " + line);
-          terminal.flush();
+          boolean handled = false;
+          if (line.startsWith("/")) {
+            Optional<ReplCommand> first = replCommands.stream().filter(r -> r.canHandle(line)).findFirst();
+            if(first.isPresent()) {
+              handled = true;
+              first.get().dispatch(line, terminal);
+            }
+          }
+
+          if (!handled) {
+            terminal.writer().println(mainAgent.send(line));
+            terminal.flush();
+          }
+
         }
 
         terminal.writer().println("Goodbye!");
@@ -58,6 +69,8 @@ public class ReplConfiguration {
 
       } catch (IOException e) {
         System.err.println("Error creating terminal: " + e.getMessage());
+      } finally {
+        mainAgent.close();
       }
 
     };
