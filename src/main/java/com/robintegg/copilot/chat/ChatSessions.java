@@ -1,19 +1,19 @@
 package com.robintegg.copilot.chat;
 
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChatSessions {
 
-  private final ChatClient.Builder clientBuilder;
+  private final OpenAiChatModel chatModel;
 
-  public ChatSessions(ChatClient.Builder clientBuilder) {
-    this.clientBuilder = clientBuilder;
+  public ChatSessions(OpenAiChatModel chatModel) {
+    this.chatModel = chatModel;
   }
 
   public ChatSession createSession() {
-    return new ChatSession(clientBuilder.clone());
+    return new ChatSession(chatModel);
   }
 
 }
