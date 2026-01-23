@@ -1,6 +1,7 @@
 package com.robintegg.copilot.agents;
 
 import com.robintegg.copilot.chat.ChatSession;
+import com.robintegg.copilot.chat.ChatSessionConfiguration;
 import com.robintegg.copilot.chat.ChatSessions;
 import org.springframework.stereotype.Component;
 
