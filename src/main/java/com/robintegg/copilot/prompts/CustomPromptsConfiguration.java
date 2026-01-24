@@ -5,13 +5,9 @@ import com.robintegg.copilot.repl.ReplCommand;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
-import org.jline.reader.impl.completer.AggregateCompleter;
-import org.jline.reader.impl.completer.ArgumentCompleter;
-import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

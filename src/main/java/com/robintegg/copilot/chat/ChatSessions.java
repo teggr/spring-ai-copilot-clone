@@ -11,10 +11,12 @@ public class ChatSessions {
 
   private final OpenAiChatModel chatModel;
   private final List<ChatSessionConfigurer> configurers;
+  private final List<PromptConfigurer> promptConfigurers;
 
-  public ChatSessions(OpenAiChatModel chatModel, List<ChatSessionConfigurer> configurers) {
+  public ChatSessions(OpenAiChatModel chatModel, List<ChatSessionConfigurer> configurers,  List<PromptConfigurer> promptConfigurers) {
     this.chatModel = chatModel;
     this.configurers = configurers;
+    this.promptConfigurers = promptConfigurers;
   }
 
   public ChatSession createSession() {
@@ -27,7 +29,7 @@ public class ChatSessions {
 
     }
 
-    return new ChatSession(builder);
+    return new ChatSession(builder, promptConfigurers);
 
   }
 
