@@ -1,5 +1,6 @@
 package com.robintegg.copilot.chat;
 
+import com.robintegg.copilot.agents.Agents;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -17,7 +18,7 @@ public class ChatSession {
     this.promptConfigurers = promptConfigurers;
   }
 
-  public String sendMessage(String message) {
+  public String sendMessage(Agents.Agent agent, String message) {
 
     ChatClient.ChatClientRequestSpec prompt = this.chatClient.prompt();
 
@@ -27,6 +28,10 @@ public class ChatSession {
 
       messages.addAll( promptConfigurer.messages() );
 
+    }
+
+    if(agent != null) {
+      messages.add(new UserMessage(agent.content()));
     }
 
     messages.add(new UserMessage(message));
