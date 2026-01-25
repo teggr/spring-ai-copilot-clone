@@ -25,15 +25,5 @@ public class ChatSessionConfiguration {
       .defaultAdvisors(new SimpleLoggerAdvisor());
   }
 
-  @Bean
-  public ChatSessionConfigurer messageChatMemory() {
-    InMemoryChatMemoryRepository inMemoryChatMemoryRepository = new InMemoryChatMemoryRepository();
-    MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
-      .chatMemoryRepository(inMemoryChatMemoryRepository)
-      .maxMessages(10)
-      .build();
-    return builder -> builder
-      .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build());
-  }
 
 }
