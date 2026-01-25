@@ -43,6 +43,15 @@ public class DefaultToolsConfiguration {
 
   static class DefaultToolDefinitions {
 
+    @Bean
+    public SystemMessageConfigurer toolsMessage() {
+      return () -> """
+           When you decide to call a tool:
+           1. First explain briefly why the tool is needed.
+           2. Then call the tool.
+           """;
+    }
+
     @Tool(description = "Reads the contents of a specified file and returns it as a string.")
     public String readFile(@ToolParam(description = "The path to the file to read") String filePath) throws IOException {
       logger.info("TOOL INVOKED - Reading file: " + filePath);

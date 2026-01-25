@@ -1,0 +1,1 @@
+read the file .examples/files/transformers.txt and summarise
