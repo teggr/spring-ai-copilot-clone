@@ -1,0 +1,1 @@
+Explain briefly why flamingos are pink.

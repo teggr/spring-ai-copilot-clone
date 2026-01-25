@@ -45,4 +45,3 @@ buildNumber.properties
 .settings/
 bin/
 .logs/
-.examples/
