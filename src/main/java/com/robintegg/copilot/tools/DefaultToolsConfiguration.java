@@ -1,6 +1,6 @@
 package com.robintegg.copilot.tools;
 
-import com.robintegg.copilot.chat.ChatSessionConfigurer;
+import com.robintegg.copilot.chat.ToolsConfigurer;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,9 @@ public class DefaultToolsConfiguration {
   private static final Logger logger = LoggerFactory.getLogger(DefaultToolsConfiguration.class);
 
   @Bean
-  public ChatSessionConfigurer defaultTools() {
+  public ToolsConfigurer defaultTools() {
 
-    return builder -> builder.defaultTools(new DefaultToolDefinitions());
+    return DefaultToolDefinitions::new;
 
   }
 
