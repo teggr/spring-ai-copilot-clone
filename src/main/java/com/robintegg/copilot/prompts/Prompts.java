@@ -24,7 +24,7 @@ public class Prompts {
   }
 
   @PostConstruct
-  private void loadPrompts() {
+  public void loadPrompts() {
     File promptsDirectory = new File(PROMPTS_DIR);
 
     if (!promptsDirectory.exists() || !promptsDirectory.isDirectory()) {
