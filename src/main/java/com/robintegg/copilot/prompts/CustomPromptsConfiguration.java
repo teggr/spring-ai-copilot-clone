@@ -9,7 +9,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -17,8 +16,7 @@ public class CustomPromptsConfiguration implements BeanDefinitionRegistryPostPro
 
   @Override
   public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-    // This will be called after all beans are defined but before instantiation
-    // We'll register prompt command beans here
+    // Not used - all bean registration is done in postProcessBeanFactory
   }
 
   @Override
