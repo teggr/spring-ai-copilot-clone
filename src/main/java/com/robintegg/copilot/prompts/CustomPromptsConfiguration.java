@@ -2,69 +2,56 @@ package com.robintegg.copilot.prompts;
 
 import com.robintegg.copilot.agents.MainAgent;
 import com.robintegg.copilot.repl.ReplCommand;
-import io.micrometer.core.instrument.util.IOUtils;
-import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
+import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import static org.jline.builtins.Completers.TreeCompleter.node;
-
 @Configuration
-public class CustomPromptsConfiguration {
+public class CustomPromptsConfiguration implements BeanDefinitionRegistryPostProcessor {
 
-  @Bean
-  public ReplCommand customPromptCommand(MainAgent mainAgent) {
+  @Override
+  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+    // This will be called after all beans are defined but before instantiation
+    // We'll register prompt command beans here
+  }
 
-    File currentDir = new File(".examples/.github/prompts");
+  @Override
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    Prompts prompts = beanFactory.getBean(Prompts.class);
+    MainAgent mainAgent = beanFactory.getBean(MainAgent.class);
 
-    return new ReplCommand() {
+    for (Prompts.Prompt prompt : prompts.getAll()) {
+      String commandName = "/" + prompt.name();
+      
+      ReplCommand command = new ReplCommand() {
 
-      @Override
-      public Completer completer() {
-        return new Completers.TreeCompleter(
-          node(
-            "/prompt",
-            node(new Completers.FilesCompleter(currentDir, "*.prompt.md"))
-          )
-        );
-      }
+        @Override
+        public Completer completer() {
+          return new StringsCompleter(commandName);
+        }
 
-      @Override
-      public void dispatch(String line, Terminal terminal) {
-
-        String strippedLine = line.replaceFirst("/prompt", "").trim();
-
-        File promptFile = new File(currentDir, strippedLine);
-
-        try {
-
-          String promptFileContents = IOUtils.toString(new FileInputStream(promptFile));
-
-          // parse the command line
-          String response = mainAgent.send(promptFileContents);
-
+        @Override
+        public void dispatch(String line, Terminal terminal) {
+          String response = mainAgent.send(prompt.content());
           terminal.writer().println(response);
+          terminal.writer().flush();
+        }
 
-        } catch ( IOException e) {
-          terminal.writer().println("Could not read prompt file: " + promptFile.getAbsolutePath());
-         }
+        @Override
+        public boolean canHandle(String line) {
+          return line.trim().startsWith(commandName);
+        }
 
-        terminal.writer().flush();
-
-      }
-
-      @Override
-      public boolean canHandle(String line) {
-        return line.startsWith("/prompt");
-      }
-
-    };
+      };
+      
+      beanFactory.registerSingleton("promptCommand_" + prompt.name(), command);
+    }
   }
 
 }
