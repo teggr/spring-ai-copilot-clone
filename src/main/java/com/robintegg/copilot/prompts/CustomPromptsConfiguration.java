@@ -5,24 +5,19 @@ import com.robintegg.copilot.repl.ReplCommand;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
-public class CustomPromptsConfiguration implements BeanDefinitionRegistryPostProcessor {
+public class CustomPromptsConfiguration {
 
-  @Override
-  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-    // Not used - all bean registration is done in postProcessBeanFactory
-  }
+  @Bean
+  public List<ReplCommand> customPromptCommands(Prompts prompts, MainAgent mainAgent) {
 
-  @Override
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    Prompts prompts = beanFactory.getBean(Prompts.class);
-    MainAgent mainAgent = beanFactory.getBean(MainAgent.class);
+    List<ReplCommand> commands = new ArrayList<>();
 
     for (Prompts.Prompt prompt : prompts.getAll()) {
       String commandName = "/" + prompt.name();
@@ -48,8 +43,10 @@ public class CustomPromptsConfiguration implements BeanDefinitionRegistryPostPro
 
       };
       
-      beanFactory.registerSingleton("promptCommand_" + prompt.name(), command);
+      commands.add(command);
     }
+
+    return commands;
   }
 
 }

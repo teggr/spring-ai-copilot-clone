@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,9 +21,9 @@ public class Prompts {
 
   public Prompts() {
     this.promptsMap = new HashMap<>();
-    loadPrompts();
   }
 
+  @PostConstruct
   private void loadPrompts() {
     File promptsDirectory = new File(PROMPTS_DIR);
 
