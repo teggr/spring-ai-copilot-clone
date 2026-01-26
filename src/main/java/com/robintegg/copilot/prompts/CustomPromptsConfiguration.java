@@ -31,7 +31,19 @@ public class CustomPromptsConfiguration {
 
         @Override
         public void dispatch(String line, Terminal terminal) {
-          String response = mainAgent.send(prompt.content());
+          // Extract any additional text after the command
+          String remainingText = "";
+          if (line.length() > commandName.length()) {
+            remainingText = line.substring(commandName.length()).trim();
+          }
+          
+          // Build the complete prompt
+          String completePrompt = prompt.content();
+          if (!remainingText.isEmpty()) {
+            completePrompt = completePrompt + "\n\n" + remainingText;
+          }
+          
+          String response = mainAgent.send(completePrompt);
           terminal.writer().println(response);
           terminal.writer().flush();
         }
