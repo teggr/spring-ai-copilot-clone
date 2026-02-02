@@ -106,3 +106,8 @@ Tue Jan 21 16:30:00 UTC 2026
 Goodbye!
 ```
 
+## Progressive Inclusion of features
+
+Use the following profiles to selectively include features:
+
+- `interactive-console` - Includes the interactive console feature
