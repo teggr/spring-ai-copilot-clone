@@ -3,8 +3,10 @@ package com.robintegg.copilot.system;
 import com.robintegg.copilot.chat.SystemMessageConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 
+@Profile( "system" )
 @Configuration
 public class SystemConfiguration {
 

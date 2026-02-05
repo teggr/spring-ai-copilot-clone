@@ -9,6 +9,7 @@ import org.springframework.ai.tool.metadata.ToolMetadata;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+@Profile( "agents" )
 @Configuration
 public class SubAgentConfugration {
 
@@ -32,7 +34,7 @@ public class SubAgentConfugration {
   }
 
   @Bean
-  public DefaultToolCallbackConfigurer subAgentToolCallbackConfigurer(Agents agents, @Lazy ChatSessions chatSessions) {
+  public DefaultToolCallbackConfigurer subAgentToolCallbackConfigurer( Agents agents, @Lazy ChatSessions chatSessions) {
 
     List<ToolCallback> toolCallbacks = new ArrayList<>();
 

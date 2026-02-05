@@ -22,7 +22,7 @@ public class SubAgent {
   }
 
   public String send(String line) {
-    return mainSession.sendMessage(agent, line, (output) -> {});
+    return mainSession.sendMessage(agent, line);
   }
 
   public void close() {

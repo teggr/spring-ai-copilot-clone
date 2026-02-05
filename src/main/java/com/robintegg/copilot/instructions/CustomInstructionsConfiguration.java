@@ -6,12 +6,14 @@ import io.micrometer.core.instrument.util.IOUtils;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+@Profile( "instructions" )
 @Configuration
 public class CustomInstructionsConfiguration {
 

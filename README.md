@@ -110,4 +110,11 @@ Goodbye!
 
 Use the following profiles to selectively include features:
 
-- `interactive-console` - Includes the interactive console feature
+* system
+* memory
+* prompts
+* instructions
+* tools
+* mcp
+* skills
+* agents

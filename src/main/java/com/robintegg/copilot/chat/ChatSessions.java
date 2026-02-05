@@ -41,7 +41,10 @@ public class ChatSessions {
     for (SystemMessageConfigurer systemMessageConfigurer : systemMessageConfigurers) {
       systemMessageBuilder.append( systemMessageConfigurer.systemMessage() );
     }
-    builder.defaultSystem(systemMessageBuilder.toString());
+    final String systemMessage = systemMessageBuilder.toString();
+    if( !systemMessage.isEmpty() ) {
+      builder.defaultSystem( systemMessage );
+    }
 
     // other configurations
     for (ChatSessionConfigurer configurer : configurers) {

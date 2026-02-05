@@ -8,9 +8,11 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
+@Profile( "agents" )
 @Configuration
 public class CustomAgentConfiguration {
 
