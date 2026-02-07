@@ -2,71 +2,65 @@ package com.robintegg.copilot.prompts;
 
 import com.robintegg.copilot.agents.MainAgent;
 import com.robintegg.copilot.repl.ReplCommand;
-import io.micrometer.core.instrument.util.IOUtils;
-import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
+import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import java.util.ArrayList;
+import java.util.List;
 
 @Profile( "prompts" )
 @Configuration
 public class CustomPromptsConfiguration {
 
   @Bean
-  public ReplCommand customPromptCommand(MainAgent mainAgent) {
+  public List<ReplCommand> customPromptCommands(Prompts prompts, MainAgent mainAgent) {
 
-    File currentDir = new File(".examples/.github/prompts");
+    List<ReplCommand> commands = new ArrayList<>();
 
-    return new ReplCommand() {
+    for (Prompts.Prompt prompt : prompts.getAll()) {
+      String commandName = "/" + prompt.name();
+      
+      ReplCommand command = new ReplCommand() {
 
-      @Override
-      public Completer completer() {
-        return new Completers.TreeCompleter(
-          node(
-            "/prompt",
-            node(new Completers.FilesCompleter(currentDir, "*.prompt.md"))
-          )
-        );
-      }
+        @Override
+        public Completer completer() {
+          return new StringsCompleter(commandName);
+        }
 
-      @Override
-      public void dispatch(String line, Terminal terminal) {
-
-        String strippedLine = line.replaceFirst("/prompt", "").trim();
-
-        File promptFile = new File(currentDir, strippedLine);
-
-        try {
-
-          String promptFileContents = IOUtils.toString(new FileInputStream(promptFile));
-
-          // parse the command line
-          String response = mainAgent.send(promptFileContents);
-
+        @Override
+        public void dispatch(String line, Terminal terminal) {
+          // Extract any additional text after the command
+          String remainingText = "";
+          if (line.length() > commandName.length()) {
+            remainingText = line.substring(commandName.length()).trim();
+          }
+          
+          // Build the complete prompt
+          String completePrompt = prompt.content();
+          if (!remainingText.isEmpty()) {
+            completePrompt = completePrompt + "\n\n" + remainingText;
+          }
+          
+          String response = mainAgent.send(completePrompt);
           terminal.writer().println(response);
+          terminal.writer().flush();
+        }
 
-        } catch ( IOException e) {
-          terminal.writer().println("Could not read prompt file: " + promptFile.getAbsolutePath());
-         }
+        @Override
+        public boolean canHandle(String line) {
+          return line.trim().startsWith(commandName);
+        }
 
-        terminal.writer().flush();
+      };
+      
+      commands.add(command);
+    }
 
-      }
-
-      @Override
-      public boolean canHandle(String line) {
-        return line.startsWith("/prompt");
-      }
-
-    };
+    return commands;
   }
 
 }
